@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Facebook Ad Script Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@^19.1.1/",
+    "react": "https://aistudiocdn.com/react@^19.1.1",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.1.1/",
+    "uuid": "https://aistudiocdn.com/uuid@^13.0.0",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.20.0"
+  }
+}
+</script>
+  <style>
+    @keyframes reveal {
+      from {
+        opacity: 0;
+        transform: scale(0.95) translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+    .animate-reveal {
+      animation: reveal 0.5s ease-out forwards;
+    }
+
+    @keyframes ssr-glow {
+      0%, 100% {
+        box-shadow: 0 0 5px rgba(251, 191, 36, 0.4), 0 0 10px rgba(251, 191, 36, 0.3), 0 0 15px rgba(251, 191, 36, 0.2);
+      }
+      50% {
+        box-shadow: 0 0 10px rgba(251, 191, 36, 0.6), 0 0 20px rgba(251, 191, 36, 0.4), 0 0 30px rgba(251, 191, 36, 0.3);
+      }
+    }
+    .animate-ssr-glow {
+      animation: ssr-glow 3s ease-in-out infinite;
+    }
+
+    /* Liquid Glass Styles */
+    .glass-card {
+      background-color: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .glass-card-selected {
+       box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.7); /* ring-indigo-500 */
+       background-color: rgba(238, 242, 255, 0.7); /* bg-indigo-50 */
+    }
+
+    .glass-tab-area {
+       background-color: rgba(249, 250, 251, 0.7); /* bg-gray-50 */
+       backdrop-filter: blur(12px);
+       -webkit-backdrop-filter: blur(12px);
+       border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    body {
+       background-image: 
+        radial-gradient(circle at 15% 50%, rgba(124, 58, 237, 0.08), transparent 40%),
+        radial-gradient(circle at 85% 30%, rgba(59, 130, 246, 0.08), transparent 40%);
+       background-attachment: fixed;
+    }
+    
+    @keyframes crazy-glow {
+      0%, 100% {
+        box-shadow: 0 0 8px rgba(249, 115, 22, 0.5), 0 0 16px rgba(249, 115, 22, 0.4);
+      }
+      50% {
+        box-shadow: 0 0 16px rgba(249, 115, 22, 0.8), 0 0 32px rgba(249, 115, 22, 0.6);
+      }
+    }
+    .crazy-mode-active .crazy-glow-button {
+      animation: crazy-glow 1.5s ease-in-out infinite;
+    }
+    
+    /* Charged Summon Easter Egg */
+    @keyframes charge-glow-ssr {
+      0% {
+        box-shadow: 0 0 8px rgba(99, 102, 241, 0.6), 0 0 16px rgba(99, 102, 241, 0.4);
+        transform: scale(1.02);
+      }
+      50% {
+        box-shadow: 0 0 12px rgba(168, 85, 247, 0.8), 0 0 24px rgba(168, 85, 247, 0.6);
+        transform: scale(1.05);
+      }
+      100% {
+        box-shadow: 0 0 20px rgba(251, 191, 36, 1), 0 0 40px rgba(251, 191, 36, 0.8), 0 0 4px #fff inset;
+        transform: scale(1.08);
+      }
+    }
+    .charge-active {
+      animation: charge-glow-ssr 3s ease-in-out forwards;
+    }
+    
+    /* Easter Egg Slider Animations */
+    @keyframes crazy-thumb-pulse {
+      0% { transform: scale(1.2) rotate(-2deg); }
+      25% { transform: scale(1.3) rotate(2deg); }
+      50% { transform: scale(1.2) rotate(0deg); }
+      75% { transform: scale(1.3) rotate(-2deg); }
+      100% { transform: scale(1.2) rotate(2deg); }
+    }
+    @keyframes flicker {
+      0%, 100% { box-shadow: 0 0 12px #ef4444, 0 0 24px #f87171, 0 0 3px white inset; }
+      50% { box-shadow: 0 0 8px #ef4444, 0 0 16px #f87171, 0 0 3px white inset; }
+    }
+    @keyframes crazy-label-reveal {
+      0% { transform: scale(0.5) rotate(-25deg) translateY(10px); opacity: 0; }
+      70% { transform: scale(1.2) rotate(10deg) translateY(0px); opacity: 1; }
+      100% { transform: scale(1) rotate(0deg) translateY(0px); opacity: 1; }
+    }
+    .animate-crazy-label {
+      animation: crazy-label-reveal 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+    
+    /* New Easter Egg: Meme Lord Mode */
+    @keyframes meme-lord-glow {
+      0%, 100% { box-shadow: 0 0 8px #ff00de, 0 0 16px #00f, 0 0 24px #0ff; transform: scale(1.03) rotate(-1deg); }
+      25% { box-shadow: 0 0 8px #0ff, 0 0 16px #0f0, 0 0 24px #ff0; transform: scale(1.03) rotate(1deg); }
+      50% { box-shadow: 0 0 8px #ff0, 0 0 16px #f60, 0 0 24px #f00; transform: scale(1.03) rotate(-1deg); }
+      75% { box-shadow: 0 0 8px #f00, 0 0 16px #ff00de, 0 0 24px #00f; transform: scale(1.03) rotate(1deg); }
+    }
+    .meme-lord-active {
+      animation: meme-lord-glow 2s linear infinite;
+      font-weight: 800; /* extra-bold */
+      text-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
+    }
+
+    /* Custom Emotion Slider Styles */
+    .emotion-slider {
+      -webkit-appearance: none; appearance: none;
+      width: 100%; background: transparent; cursor: pointer;
+      padding: 0; margin: 0;
+    }
+    .emotion-slider:focus { outline: none; }
+
+    /* Track */
+    .emotion-slider::-webkit-slider-runnable-track {
+      width: 100%; height: 8px;
+      background: linear-gradient(to right, #c7d2fe 0%, #a5b4fc 100%);
+      border-radius: 4px;
+    }
+    .emotion-slider::-moz-range-track {
+      width: 100%; height: 8px;
+      background: linear-gradient(to right, #c7d2fe 0%, #a5b4fc 100%);
+      border-radius: 4px;
+    }
+
+    /* Thumb */
+    .emotion-slider::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none;
+      margin-top: -6px; height: 20px; width: 20px;
+      background-color: #4f46e5; /* indigo-700 */
+      border-radius: 50%; border: 2px solid white;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+      transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+    }
+    .emotion-slider::-moz-range-thumb {
+      height: 20px; width: 20px; background-color: #4f46e5;
+      border-radius: 50%; border: 2px solid white;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+      transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+    }
+
+    /* Crazy Mode Thumb */
+    .emotion-slider.is-crazy::-webkit-slider-thumb {
+      background-color: #ef4444; /* red-500 */
+      animation: crazy-thumb-pulse 0.5s ease-in-out infinite alternate, flicker 0.15s linear infinite;
+    }
+    .emotion-slider.is-crazy::-moz-range-thumb {
+      background-color: #ef4444;
+      animation: crazy-thumb-pulse 0.5s ease-in-out infinite alternate, flicker 0.15s linear infinite;
+    }
+  </style>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body class="bg-gray-50">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
